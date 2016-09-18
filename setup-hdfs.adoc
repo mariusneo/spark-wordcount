@@ -30,5 +30,5 @@ I have manually copied a few files on the HDFS cluster:
 ➜  hadoop-2.7.3 bin/hdfs dfs -mkdir -p /user/marius/gutenberg
 ➜  hadoop-2.7.3 bin/hdfs dfs -copyFromLocal ~/Downloads/leonardo-da-vinci-notebooks.txt /user/marius/gutenberg
 ➜  hadoop-2.7.3 bin/hdfs dfs -copyFromLocal ~/Downloads/james-joyce-ulysses.txt /user/marius/gutenberg
-➜  hadoop-2.7.3 bin/hdfs dfs -copyFromLocal ~/Downloads/james-joyce-ulysses.txt /user/marius/gutenberg
+➜  hadoop-2.7.3 bin/hdfs dfs -copyFromLocal ~/Downloads/stopwords.txt /user/marius/gutenberg
 ----
