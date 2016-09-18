@@ -1,0 +1,38 @@
+= Spark Java Wordcount
+
+== Introduction
+
+The current project is a simple proof of concept on how to work with http://spark.apache.org/[Apache Spark]
+for calculating the number of words within a document.
+The initial sample code was taken from the examples provided with the Spark installation
+and afterwards adapted to only return the most frequent words in the document.
+
+== Setup of the environment
+
+The reason why I am writing this document is because I've stumbled on several issues while
+performing the setup of the test environment.
+
+I opted to use a http://spark.apache.org/docs/latest/spark-standalone.html[Spark Standalone Cluster]
+based on Docker and the files to be used as input for the word counters are retrieved via HDFs.
+
+
+include::setup-docker-cluster.adoc[]
+include::setup-hdfs.adoc[]
+
+
+== Running the example
+
+With everything setup, we can proceed to execute the word count example
+
+----
+➜  spark-2.0.0-bin-hadoop2.7 bin/spark-submit /
+--class com.samples.spark.JavaWordCount /
+--master spark://172.17.0.1:7077 /
+/home/marius/Downloads/spark-workcount/build/libs/spark-workcount-all-1.0-SNAPSHOT.jar  /
+hdfs://10.0.0.2:9000/user/marius/gutenberg/james-joyce-ulysses.txt
+----
+
+
+
+
+

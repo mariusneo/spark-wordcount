@@ -1,0 +1,74 @@
+=== Setup of Docker standalone cluster
+
+I started with the instructions provided within the repository
+https://github.com/epahomov/docker-spark[epahomove Docker-Spark] in order to tweak my own https://www.docker.com/[Docker] environment
+
+----
+➜  spark-2.0.0-bin-hadoop2.7 docker --version
+Docker version 1.12.1, build 23cf638
+----
+
+
+The variables :
+
+* SPARK_MASTER_IP
+* SPARK_LOCAL_IP
+
+
+,which are used by Spark so that the driver and the worker instances hold the references to each other
+as IPs instead of hostnames.
+
+Due to the fact that this variables were not correctly calculated (they were pointing in my case to 127.0.0.1)
+I forked the repository and made a few modifications. The repository is available on
+https://github.com/mariusneo/docker-spark[Github].
+
+Now the driver can be started by using the following command:
+
+
+----
+➜  docker-spark git:(master) ✗ ./start-master.sh
+----
+
+and the worker(s) can be started like this:
+
+
+----
+➜  docker-spark git:(master) ✗ ./start-worker.sh
+----
+
+
+After the Spark standalone cluster has been started on Docker, we should be able to see something like this:
+
+
+----
+➜  docker-spark git:(master) sudo docker ps
+CONTAINER ID        IMAGE               COMMAND              CREATED             STATUS              PORTS                                                                                                                                                                                                                                                                               NAMES
+fdaa1ccf73d4        docker-spark        "/start-worker.sh"   About an hour ago   Up About an hour    0.0.0.0:32800->4040/tcp, 0.0.0.0:32799->7001/tcp, 0.0.0.0:32798->7002/tcp, 0.0.0.0:32797->7003/tcp, 0.0.0.0:32796->7004/tcp, 0.0.0.0:32795->7005/tcp, 0.0.0.0:32794->7006/tcp, 0.0.0.0:32793->7077/tcp, 0.0.0.0:32792->8080/tcp, 0.0.0.0:32791->8081/tcp, 0.0.0.0:32790->8888/tcp   pedantic_turing
+865e282624ba        docker-spark        "/start-worker.sh"   About an hour ago   Up About an hour    0.0.0.0:32789->4040/tcp, 0.0.0.0:32788->7001/tcp, 0.0.0.0:32787->7002/tcp, 0.0.0.0:32786->7003/tcp, 0.0.0.0:32785->7004/tcp, 0.0.0.0:32784->7005/tcp, 0.0.0.0:32783->7006/tcp, 0.0.0.0:32782->7077/tcp, 0.0.0.0:32781->8080/tcp, 0.0.0.0:32780->8081/tcp, 0.0.0.0:32779->8888/tcp   pedantic_archimedes
+70b93dbe9d52        docker-spark        "/start-master.sh"   About an hour ago   Up About an hour    0.0.0.0:32778->4040/tcp, 0.0.0.0:32777->7001/tcp, 0.0.0.0:32776->7002/tcp, 0.0.0.0:32775->7003/tcp, 0.0.0.0:32774->7004/tcp, 0.0.0.0:32773->7005/tcp, 0.0.0.0:32772->7006/tcp, 0.0.0.0:32771->7077/tcp, 0.0.0.0:32770->8080/tcp, 0.0.0.0:32769->8081/tcp, 0.0.0.0:32768->8888/tcp   spark_master
+----
+
+
+By using the command:
+
+----
+➜  docker-spark git:(master) sudo docker inspect 70b93dbe9d52
+----
+
+we can obtain the IP address of the Spark driver:
+
+----
+"IPAddress": "172.17.0.1",
+----
+
+
+The web UI ports for the driver and workers are configured in the Dockerfile:
+
+----
+ENV SPARK_MASTER_WEBUI_PORT 8080
+ENV SPARK_WORKER_WEBUI_PORT 8081
+----
+
+
+Now, by visiting the page http://172.17.0.1:8080/ we can access the Spark administration
+console for the Spark Driver.

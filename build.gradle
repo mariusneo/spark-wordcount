@@ -1,0 +1,44 @@
+group 'com.samples.spark'
+version '1.0-SNAPSHOT'
+
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+repositories {
+    mavenCentral()
+}
+
+
+ext.scalaBinaryVersion = '2.11'
+ext.scalaVersion = '2.11.8'
+
+dependencies {
+    compileOnly("org.apache.spark:spark-core_${scalaBinaryVersion}:2.0.0")
+    compileOnly("org.apache.spark:spark-sql_${scalaBinaryVersion}:2.0.0")
+    compileOnly("org.scala-lang:scala-library:${scalaVersion}")
+}
+
+
+
+compileJava {
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+}
+
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.4'
+}
+
+//create a single Jar with all dependencies
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Spark Java Word Count',
+                'Implementation-Version': version
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}

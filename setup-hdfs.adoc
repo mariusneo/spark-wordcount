@@ -1,0 +1,34 @@
+=== Setup of HDFS
+
+I opted for the purpose of this proof of concept to setup a https://hadoop.apache.org/docs/r2.7.3/hadoop-project-dist/hadoop-common/SingleCluster.html#Pseudo-Distributed_Operation[Pseudo-Distributed HDFS Cluster]
+
+In this case I opted for performing the installation of HDFS on my own machine.
+
+The only thing to point here is that I used the IP of my machine (in order to be able
+to access it via IP from the Docker machines):
+
+----
+➜  hadoop-2.7.3 cat etc/hadoop/core-site.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<!-- Put site-specific property overrides in this file. -->
+
+<configuration>
+    <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://10.0.0.2:9000</value>
+    </property>
+</configuration>
+----
+
+(I guess this operation may be very very likely done also via Docker)
+
+I have manually copied a few files on the HDFS cluster:
+
+----
+➜  hadoop-2.7.3 bin/hdfs dfs -mkdir -p /user/marius/gutenberg
+➜  hadoop-2.7.3 bin/hdfs dfs -copyFromLocal ~/Downloads/leonardo-da-vinci-notebooks.txt /user/marius/gutenberg
+➜  hadoop-2.7.3 bin/hdfs dfs -copyFromLocal ~/Downloads/james-joyce-ulysses.txt /user/marius/gutenberg
+➜  hadoop-2.7.3 bin/hdfs dfs -copyFromLocal ~/Downloads/james-joyce-ulysses.txt /user/marius/gutenberg
+----
